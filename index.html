@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📔 데스노트 - 블랙리스트</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'DeathNote';
+            src: url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .death-note-ui {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .death-note-book {
+            width: 200px;
+            height: 300px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+            border: 3px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 20px 60px rgba(255, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .death-note-book:hover {
+            transform: scale(1.05);
+            box-shadow: 0 30px 80px rgba(255, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .death-note-book:active {
+            transform: scale(0.98);
+        }
+
+        .death-note-cover {
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+            border-radius: 8px;
+        }
+
+        .death-note-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2em;
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.8);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .death-note-subtitle {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2em;
+            color: #ff6b6b;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(255, 0, 0, 0.6);
+        }
+
+        .death-note-open {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 101;
+            animation: bookOpen 0.6s ease-out;
+        }
+
+        @keyframes bookOpen {
+            0% {
+                transform: translate(-50%, -50%) rotateY(90deg) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) rotateY(0deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .death-note-pages {
+            display: flex;
+            width: 600px;
+            height: 400px;
+            background: #000;
+            border: 5px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(255, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .death-note-page-left {
+            flex: 1;
+            background: linear-gradient(90deg, #0a0a0a 0%, #1a1a1a 100%);
+            border-right: 3px solid #333;
+            position: relative;
+        }
+
+        .death-note-page-left::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px dashed #333;
+            border-radius: 5px;
+        }
+
+        .death-note-page-right {
+            flex: 1;
+            background: linear-gradient(90deg, #1a1a1a 0%, #0a0a0a 100%);
+            padding: 30px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .page-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .death-note-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #ff0000;
+            color: #ff0000;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.3em;
+            padding: 10px 5px;
+            outline: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .death-note-input::placeholder {
+            color: #663333;
+        }
+
+        .death-note-arrow {
+            font-family: 'Fredoka One', cursive;
+            color: #ff0000;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+            letter-spacing: 3px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+            }
+            50% {
+                opacity: 0.5;
+                text-shadow: 0 0 20px rgba(255, 0, 0, 1);
+            }
+        }
+
+        .death-note-button {
+            background: #ff0000;
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .death-note-button:hover {
+            background: #ff3333;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+        }
+
+        .death-note-button:active {
+            transform: scale(0.95);
+        }
+
+        .close-note-button {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #ff0000;
+            background: #1a1a1a;
+            color: #ff0000;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-note-button:hover {
+            background: #ff0000;
+            color: #1a1a1a;
+        }
+
+        .container {
+            background: #1f1f1f;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 3px solid #ff6b6b;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #999;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ff6b6b;
+            background: #2a2a2a;
+            color: #fff;
+            border-radius: 10px;
+            min-width: 150px;
+            min-height: 50px;
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        input:focus {
+            outline: none;
+            background: #333;
+            border-color: #ff8787;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            min-height: 50px;
+        }
+
+        button:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .game-area {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .target-name {
+            font-size: 2em;
+            color: #ffeb3b;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            word-break: break-word;
+        }
+
+        .hammer {
+            font-size: 6em;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: inline-block;
+            user-select: none;
+        }
+
+        .hammer:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .hammer:active {
+            transform: scale(0.9) rotate(10deg);
+        }
+
+        .hit-count {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #ff6b6b;
+        }
+
+        .score-board {
+            background: #1f1f1f;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #ff6b6b;
+        }
+
+        .score-board h3 {
+            color: #ffeb3b;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #2a2a2a;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+            font-size: 1em;
+        }
+
+        .score-name {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .score-hits {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            color: #999;
+            font-size: 1.1em;
+            padding: 20px;
+        }
+
+        .reset-button {
+            background: #555;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .reset-button:hover {
+            background: #666;
+        }
+
+        .hit-effect {
+            animation: hitEffect 0.3s ease-out;
+        }
+
+        @keyframes hitEffect {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                transform: scale(1.3) rotate(20deg);
+            }
+            100% {
+                transform: scale(1) rotate(-10deg);
+            }
+        }
+
+        .player-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .player-section input {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ffeb3b;
+            background: #2a2a2a;
+            color: #fff;
+            border-radius: 10px;
+            min-height: 50px;
+        }
+
+        .player-section input:focus {
+            outline: none;
+            background: #333;
+            border-color: #ffd54f;
+        }
+
+        .player-section button {
+            background: #ffeb3b;
+            color: #1a1a1a;
+            padding: 15px 30px;
+            min-height: 50px;
+            font-weight: bold;
+        }
+
+        .player-section button:hover {
+            background: #ffd54f;
+        }
+
+        .boss-info {
+            background: #2a2a2a;
+            border: 3px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .hp-bar-container {
+            width: 100%;
+            height: 40px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .hp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            width: 100%;
+            transition: width 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .hp-text {
+            text-align: center;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .players-board {
+            background: #1f1f1f;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #ffeb3b;
+        }
+
+        .players-board h3 {
+            color: #ffeb3b;
+            margin-bottom: 15px;
+        }
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #2a2a2a;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ffeb3b;
+            font-size: 1em;
+        }
+
+        .player-name {
+            color: #ffeb3b;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .player-damage {
+            color: #ff6b6b;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1f1f1f;
+            border: 3px solid #ffeb3b;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .defeat-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #2a2a2a;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+            font-size: 1.1em;
+        }
+
+        .defeat-label {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .defeat-value {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .defeat-stat.top {
+            border-left-color: #ffeb3b;
+            background: #3a3a2a;
+        }
+
+        .defeat-value.top {
+            color: #ffeb3b;
+        }
+
+        .comments-board {
+            background: #1f1f1f;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #ff6b6b;
+        }
+
+        .comments-board h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .comment-input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .comment-input-section input,
+        .comment-input-section textarea {
+            padding: 12px;
+            font-size: 1em;
+            border: 2px solid #ff6b6b;
+            background: #2a2a2a;
+            color: #fff;
+            border-radius: 8px;
+            font-family: 'Arial', sans-serif;
+            resize: vertical;
+        }
+
+        .comment-input-section input:focus,
+        .comment-input-section textarea:focus {
+            outline: none;
+            background: #333;
+            border-color: #ff8787;
+        }
+
+        .comment-input-section button {
+            background: #ff6b6b;
+            color: white;
+            padding: 12px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .comment-input-section button:hover {
+            background: #ff5252;
+        }
+
+        .comments-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border-top: 2px solid #333;
+            padding-top: 15px;
+        }
+
+        .comment-item {
+            background: #2a2a2a;
+            border-left: 4px solid #ff6b6b;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .comment-author {
+            color: #ffeb3b;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .comment-text {
+            color: #ccc;
+            font-size: 0.95em;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .comment-time {
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+
+        .empty-comments {
+            color: #999;
+            text-align: center;
+            padding: 20px;
+            font-size: 1em;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .hammer {
+                font-size: 5em;
+            }
+
+            .player-section {
+                flex-direction: column;
+            }
+
+            .player-section input, .player-section button {
+                width: 100%;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.8em;
+            }
+
+            .death-note-book {
+                width: 150px;
+                height: 220px;
+            }
+
+            .death-note-title {
+                font-size: 1.5em;
+            }
+
+            .death-note-subtitle {
+                font-size: 0.9em;
+            }
+
+            .death-note-pages {
+                width: 90vw;
+                height: 60vh;
+                max-width: 500px;
+            }
+
+            .death-note-input {
+                font-size: 1em;
+            }
+
+            .death-note-arrow {
+                font-size: 1.5em;
+            }
+
+            .death-note-button {
+                font-size: 0.9em;
+                padding: 10px 15px;
+            }
+
+            .close-note-button {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="deathNoteUI" class="death-note-ui">
+            <div class="death-note-book" onclick="openDeathNote()">
+                <div class="death-note-cover">
+                    <div class="death-note-title">DEATH NOTE</div>
+                    <div class="death-note-subtitle">블랙리스트</div>
+                </div>
+            </div>
+            <p style="text-align: center; color: #999; margin-top: 30px; font-size: 1.2em;">노트를 터치하세요</p>
+        </div>
+
+        <div id="deathNoteOpen" class="death-note-open" style="display: none;">
+            <div class="death-note-pages">
+                <div class="death-note-page-left"></div>
+                <div class="death-note-page-right">
+                    <div class="page-content">
+                        <input type="text" id="playerName" placeholder="이름을 적으세요..." maxlength="20" class="death-note-input">
+                        <div class="death-note-arrow">>>></div>
+                        <button onclick="joinGame()" class="death-note-button">세상에서 제거</button>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeDeathNote()" class="close-note-button">✕</button>
+        </div>
+
+        <div id="waitingArea" style="display: none; text-align: center; color: #999; margin: 20px 0;">
+            <p>플레이어 이름을 입력하고 입장하세요!</p>
+        </div>
+
+        <div id="gameContainer" style="display: none;">
+            <div class="boss-info">
+                <h2 id="bossName" style="color: #ff6b6b; font-size: 1.8em; margin-bottom: 10px;">블랙리스트</h2>
+                <div class="hp-bar-container">
+                    <div class="hp-bar" id="hpBar"></div>
+                </div>
+                <div class="hp-text">
+                    <span id="hpDisplay">100 / 100</span>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <div class="hammer" id="hammer" onclick="hitBoss()">⚒️</div>
+                <p style="color: #999; margin-top: 20px;">망치를 클릭해서 때려!</p>
+                <p id="playerInfo" style="color: #ffeb3b; font-size: 1.2em; margin-top: 10px;"></p>
+            </div>
+
+            <div class="players-board">
+                <h3>👥 참여 중인 플레이어</h3>
+                <div id="playersList"></div>
+            </div>
+
+            <div class="score-board">
+                <h3>⚔️ 보스 처치 기록</h3>
+                <div id="scoreList" class="empty-message">아직 처치된 보스가 없습니다.</div>
+                <button class="reset-button" onclick="resetAllData()">전체 초기화</button>
+            </div>
+
+            <div class="comments-board">
+                <h3>💬 댓글 (욕설 환영)</h3>
+                <div class="comment-input-section">
+                    <input type="text" id="commentAuthor" placeholder="닉네임" maxlength="20">
+                    <textarea id="commentText" placeholder="당신의 욕설을 마음껏 펼쳐라...💢" maxlength="200" rows="3"></textarea>
+                    <button onclick="addComment()">댓글 작성</button>
+                </div>
+                <div id="commentsList" class="comments-list"></div>
+            </div>
+        </div>
+
+        <div id="bossDefeatedModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2 style="color: #ffeb3b; margin-bottom: 20px;">🎉 보스 처치 성공!</h2>
+                <div id="defeatStats"></div>
+                <button onclick="closeBossModal()" style="margin-top: 20px;">다시 플레이</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BOSS_MAX_HP = 100;
+        let gameState = {
+            currentBoss: null,
+            bossHp: BOSS_MAX_HP,
+            currentPlayer: null,
+            players: {},
+            bossDefeats: [],
+            comments: []
+        };
+
+        // 로컬 스토리지에서 데이터 로드
+        function loadGameState() {
+            const saved = localStorage.getItem('bossGameState');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+        }
+
+        // 로컬 스토리지에 데이터 저장
+        function saveGameState() {
+            localStorage.setItem('bossGameState', JSON.stringify(gameState));
+        }
+
+        // 주기적으로 다른 탭의 변화 감지 (멀티탭 동기화)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'bossGameState') {
+                gameState = JSON.parse(e.newValue || '{}');
+                updateGameDisplay();
+            }
+        });
+
+        function openDeathNote() {
+            document.getElementById('deathNoteUI').style.display = 'none';
+            document.getElementById('deathNoteOpen').style.display = 'block';
+            document.getElementById('playerName').focus();
+        }
+
+        function closeDeathNote() {
+            document.getElementById('deathNoteUI').style.display = 'block';
+            document.getElementById('deathNoteOpen').style.display = 'none';
+            document.getElementById('playerName').value = '';
+        }
+
+        function joinGame() {
+            const input = document.getElementById('playerName');
+            const name = input.value.trim();
+
+            if (name === '') {
+                alert('이름을 적으세요!');
+                return;
+            }
+
+            if (name.length > 20) {
+                alert('20글자 이하로 입력해주세요!');
+                return;
+            }
+
+            gameState.currentPlayer = name;
+
+            // 새 플레이어 추가
+            if (!gameState.players[name]) {
+                gameState.players[name] = {
+                    damage: 0,
+                    hits: 0
+                };
+            }
+
+            saveGameState();
+            input.value = '';
+            document.getElementById('deathNoteUI').style.display = 'none';
+            document.getElementById('deathNoteOpen').style.display = 'none';
+            document.getElementById('waitingArea').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+
+            updateGameDisplay();
+        }
+
+        function hitBoss() {
+            if (!gameState.currentPlayer) return;
+
+            const damage = Math.floor(Math.random() * 5) + 8; // 8~12 데미지
+            gameState.bossHp = Math.max(0, gameState.bossHp - damage);
+            gameState.players[gameState.currentPlayer].damage += damage;
+            gameState.players[gameState.currentPlayer].hits += 1;
+
+            const hammer = document.getElementById('hammer');
+            hammer.classList.add('hit-effect');
+
+            // 화면 흔들림
+            document.body.style.animation = 'none';
+            setTimeout(() => {
+                document.body.style.animation = 'shake 0.2s';
+            }, 0);
+
+            setTimeout(() => {
+                hammer.classList.remove('hit-effect');
+            }, 300);
+
+            saveGameState();
+            updateGameDisplay();
+
+            // 보스 처치 확인
+            if (gameState.bossHp <= 0) {
+                defeatBoss();
+            }
+        }
+
+        function defeatBoss() {
+            // 처치 기록 저장
+            const defeatRecord = {
+                timestamp: new Date().toLocaleString('ko-KR'),
+                bossName: gameState.currentBoss || '블랙리스트',
+                players: Object.entries(gameState.players).map(([name, stats]) => ({
+                    name,
+                    damage: stats.damage,
+                    hits: stats.hits
+                })).sort((a, b) => b.damage - a.damage)
+            };
+
+            gameState.bossDefeats.push(defeatRecord);
+
+            // 모달 표시
+            showDefeatModal(defeatRecord);
+
+            saveGameState();
+            updateScoreBoard();
+        }
+
+        function showDefeatModal(defeatRecord) {
+            const modal = document.getElementById('bossDefeatedModal');
+            const stats = document.getElementById('defeatStats');
+
+            let statsHtml = `
+                <p style="color: #999; margin-bottom: 20px;">
+                    처치일시: ${defeatRecord.timestamp}
+                </p>
+            `;
+
+            defeatRecord.players.forEach((player, index) => {
+                const isTop = index === 0;
+                statsHtml += `
+                    <div class="defeat-stat ${isTop ? 'top' : ''}">
+                        <span class="defeat-label">
+                            ${isTop ? '🏆 ' : ''}${player.name}
+                        </span>
+                        <span class="defeat-value ${isTop ? 'top' : ''}">
+                            ${player.damage} 데미지 (${player.hits}회)
+                        </span>
+                    </div>
+                `;
+            });
+
+            stats.innerHTML = statsHtml;
+            modal.style.display = 'flex';
+        }
+
+        function closeBossModal() {
+            document.getElementById('bossDefeatedModal').style.display = 'none';
+            resetBoss();
+        }
+
+        function resetBoss() {
+            gameState.bossHp = BOSS_MAX_HP;
+            gameState.players = {};
+            gameState.currentPlayer = null;
+
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('deathNoteUI').style.display = 'block';
+            document.getElementById('deathNoteOpen').style.display = 'none';
+            document.getElementById('playerName').value = '';
+            document.getElementById('waitingArea').style.display = 'none';
+
+            saveGameState();
+            updateScoreBoard();
+        }
+
+        function updateGameDisplay() {
+            // HP 바 업데이트
+            const hpPercent = (gameState.bossHp / BOSS_MAX_HP) * 100;
+            const hpBar = document.getElementById('hpBar');
+            hpBar.style.width = hpPercent + '%';
+
+            // HP 텍스트 업데이트
+            document.getElementById('hpDisplay').textContent =
+                `${gameState.bossHp} / ${BOSS_MAX_HP}`;
+
+            // 플레이어 정보
+            if (gameState.currentPlayer) {
+                const player = gameState.players[gameState.currentPlayer];
+                document.getElementById('playerInfo').innerHTML = `
+                    <span>${gameState.currentPlayer}</span><br>
+                    📊 누적 데미지: ${player.damage} | 타격: ${player.hits}회
+                `;
+            }
+
+            // 플레이어 목록 업데이트
+            updatePlayersList();
+        }
+
+        function updatePlayersList() {
+            const playersList = document.getElementById('playersList');
+
+            if (Object.keys(gameState.players).length === 0) {
+                playersList.innerHTML = '<div class="empty-message">참여 중인 플레이어가 없습니다.</div>';
+                return;
+            }
+
+            const sortedPlayers = Object.entries(gameState.players)
+                .map(([name, stats]) => ({ name, ...stats }))
+                .sort((a, b) => b.damage - a.damage);
+
+            playersList.innerHTML = sortedPlayers
+                .map((player, index) => `
+                    <div class="player-item">
+                        <span class="player-name">
+                            ${index === 0 ? '👑 ' : ''}${player.name}
+                        </span>
+                        <span class="player-damage">${player.damage} 💥</span>
+                    </div>
+                `)
+                .join('');
+        }
+
+        function updateScoreBoard() {
+            const scoreList = document.getElementById('scoreList');
+
+            if (gameState.bossDefeats.length === 0) {
+                scoreList.innerHTML = '<div class="empty-message">아직 처치된 보스가 없습니다.</div>';
+                return;
+            }
+
+            scoreList.innerHTML = gameState.bossDefeats
+                .reverse()
+                .map((defeat, index) => {
+                    const topPlayer = defeat.players[0];
+                    return `
+                        <div class="score-item">
+                            <div>
+                                <div style="color: #ffeb3b; font-weight: bold;">
+                                    ${defeat.bossName} (${defeat.timestamp})
+                                </div>
+                                <div style="color: #ff6b6b; font-size: 0.9em; margin-top: 5px;">
+                                    🏆 ${topPlayer.name} - ${topPlayer.damage} 데미지
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .join('');
+        }
+
+        function resetAllData() {
+            if (confirm('⚠️ 모든 게임 데이터를 삭제하시겠습니까? (복구 불가)')) {
+                gameState = {
+                    currentBoss: null,
+                    bossHp: BOSS_MAX_HP,
+                    currentPlayer: null,
+                    players: {},
+                    bossDefeats: [],
+                    comments: []
+                };
+                saveGameState();
+                resetBoss();
+            }
+        }
+
+        function addComment() {
+            const authorInput = document.getElementById('commentAuthor');
+            const textInput = document.getElementById('commentText');
+
+            const author = authorInput.value.trim();
+            const text = textInput.value.trim();
+
+            if (author === '') {
+                alert('닉네임을 입력해주세요!');
+                return;
+            }
+
+            if (text === '') {
+                alert('댓글을 입력해주세요!');
+                return;
+            }
+
+            const comment = {
+                author,
+                text,
+                timestamp: new Date().toLocaleString('ko-KR')
+            };
+
+            gameState.comments.unshift(comment); // 최신순으로 추가
+            saveGameState();
+
+            authorInput.value = '';
+            textInput.value = '';
+
+            updateCommentsList();
+        }
+
+        function updateCommentsList() {
+            const commentsList = document.getElementById('commentsList');
+
+            if (gameState.comments.length === 0) {
+                commentsList.innerHTML = '<div class="empty-comments">아직 댓글이 없습니다. 첫 번째 댓글을 달아보세요!</div>';
+                return;
+            }
+
+            commentsList.innerHTML = gameState.comments
+                .map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-author">💢 ${comment.author}</div>
+                        <div class="comment-text">${comment.text.replace(/\n/g, '<br>')}</div>
+                        <div class="comment-time">${comment.timestamp}</div>
+                    </div>
+                `)
+                .join('');
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameState();
+
+            const playerNameInput = document.getElementById('playerName');
+            playerNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    joinGame();
+                }
+            });
+
+            const commentText = document.getElementById('commentText');
+            if (commentText) {
+                commentText.addEventListener('keydown', function(e) {
+                    if (e.ctrlKey && e.key === 'Enter') {
+                        addComment();
+                    }
+                });
+            }
+
+            updateScoreBoard();
+            updateCommentsList();
+        });
+
+        // 흔들림 애니메이션
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
