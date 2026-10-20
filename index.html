@@ -1,1194 +1,644 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📔 데스노트 - 블랙리스트</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-    <style>
-        @font-face {
-            font-family: 'DeathNote';
-            src: url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .death-note-ui {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .death-note-book {
-            width: 200px;
-            height: 300px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
-            border: 3px solid #333;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 20px 60px rgba(255, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .death-note-book:hover {
-            transform: scale(1.05);
-            box-shadow: 0 30px 80px rgba(255, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        .death-note-book:active {
-            transform: scale(0.98);
-        }
-
-        .death-note-cover {
-            text-align: center;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
-            border-radius: 8px;
-        }
-
-        .death-note-title {
-            font-family: 'Fredoka One', cursive;
-            font-size: 2em;
-            color: #ff0000;
-            font-weight: bold;
-            text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.8);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .death-note-subtitle {
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.2em;
-            color: #ff6b6b;
-            font-weight: bold;
-            text-shadow: 1px 1px 5px rgba(255, 0, 0, 0.6);
-        }
-
-        .death-note-open {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 101;
-            animation: bookOpen 0.6s ease-out;
-        }
-
-        @keyframes bookOpen {
-            0% {
-                transform: translate(-50%, -50%) rotateY(90deg) scale(0.8);
-                opacity: 0;
-            }
-            100% {
-                transform: translate(-50%, -50%) rotateY(0deg) scale(1);
-                opacity: 1;
-            }
-        }
-
-        .death-note-pages {
-            display: flex;
-            width: 600px;
-            height: 400px;
-            background: #000;
-            border: 5px solid #333;
-            border-radius: 10px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(255, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .death-note-page-left {
-            flex: 1;
-            background: linear-gradient(90deg, #0a0a0a 0%, #1a1a1a 100%);
-            border-right: 3px solid #333;
-            position: relative;
-        }
-
-        .death-note-page-left::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 20px;
-            right: 20px;
-            bottom: 20px;
-            border: 2px dashed #333;
-            border-radius: 5px;
-        }
-
-        .death-note-page-right {
-            flex: 1;
-            background: linear-gradient(90deg, #1a1a1a 0%, #0a0a0a 100%);
-            padding: 30px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .page-content {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .death-note-input {
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid #ff0000;
-            color: #ff0000;
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.3em;
-            padding: 10px 5px;
-            outline: none;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .death-note-input::placeholder {
-            color: #663333;
-        }
-
-        .death-note-arrow {
-            font-family: 'Fredoka One', cursive;
-            color: #ff0000;
-            font-size: 2em;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
-            letter-spacing: 3px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-                text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
-            }
-            50% {
-                opacity: 0.5;
-                text-shadow: 0 0 20px rgba(255, 0, 0, 1);
-            }
-        }
-
-        .death-note-button {
-            background: #ff0000;
-            color: #000;
-            border: none;
-            padding: 12px 20px;
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .death-note-button:hover {
-            background: #ff3333;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
-        }
-
-        .death-note-button:active {
-            transform: scale(0.95);
-        }
-
-        .close-note-button {
-            position: absolute;
-            top: -40px;
-            right: -40px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid #ff0000;
-            background: #1a1a1a;
-            color: #ff0000;
-            font-size: 1.5em;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-note-button:hover {
-            background: #ff0000;
-            color: #1a1a1a;
-        }
-
-        .container {
-            background: #1f1f1f;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-            border: 3px solid #ff6b6b;
-        }
-
-        h1 {
-            text-align: center;
-            color: #ff6b6b;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #999;
-            font-size: 1.1em;
-            margin-bottom: 30px;
-        }
-
-        .input-section {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        input {
-            flex: 1;
-            padding: 15px;
-            font-size: 1.1em;
-            border: 2px solid #ff6b6b;
-            background: #2a2a2a;
-            color: #fff;
-            border-radius: 10px;
-            min-width: 150px;
-            min-height: 50px;
-        }
-
-        input::placeholder {
-            color: #666;
-        }
-
-        input:focus {
-            outline: none;
-            background: #333;
-            border-color: #ff8787;
-        }
-
-        button {
-            padding: 15px 30px;
-            font-size: 1.1em;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            min-height: 50px;
-        }
-
-        button:hover {
-            background: #ff5252;
-            transform: scale(1.05);
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
-
-        .game-area {
-            background: #2a2a2a;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .boss-character {
-            width: 120px;
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            animation: dollPulse 2s infinite;
-            position: relative;
-        }
-
-        @keyframes dollPulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.8;
-            }
-        }
-
-        .doll-head {
-            width: 60px;
-            height: 60px;
-            background: #fff5e1;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .doll-eyes {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 5px;
-        }
-
-        .doll-eye {
-            font-size: 1.2em;
-            color: #333;
-            animation: eyeBlink 0.8s infinite;
-        }
-
-        @keyframes eyeBlink {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        .doll-mouth {
-            font-size: 1.5em;
-            color: #ff6b9d;
-        }
-
-        .doll-body {
-            width: 50px;
-            height: 50px;
-            background: #ff6b9d;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 3px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .doll-body-line {
-            width: 2px;
-            height: 30px;
-            background: #fff5e1;
-        }
-
-        .doll-arms {
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 3px;
-        }
-
-        .doll-arm-left, .doll-arm-right {
-            font-size: 1.5em;
-            color: #ff6b9d;
-            animation: armWave 0.6s ease-in-out infinite;
-        }
-
-        .doll-arm-right {
-            animation-delay: 0.3s;
-        }
-
-        @keyframes armWave {
-            0%, 100% {
-                transform: rotate(0deg);
-            }
-            50% {
-                transform: rotate(20deg);
-            }
-        }
-
-        .doll-legs {
-            display: flex;
-            gap: 20px;
-        }
-
-        .doll-leg {
-            font-size: 1.8em;
-            color: #333;
-        }
-
-        @keyframes bossHit {
-            0% {
-                transform: translateY(0) scale(1);
-            }
-            25% {
-                transform: translateY(-10px) scale(1.05);
-            }
-            50% {
-                transform: translateY(10px) scale(0.95);
-            }
-            75% {
-                transform: translateY(-5px) scale(1.02);
-            }
-            100% {
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .target-name {
-            font-size: 2em;
-            color: #ffeb3b;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            word-break: break-word;
-        }
-
-        .hammer {
-            font-size: 6em;
-            cursor: pointer;
-            transition: all 0.1s;
-            display: inline-block;
-            user-select: none;
-        }
-
-        .hammer:hover {
-            transform: scale(1.1) rotate(-5deg);
-        }
-
-        .hammer:active {
-            transform: scale(0.9) rotate(10deg);
-        }
-
-        .hit-count {
-            margin-top: 20px;
-            font-size: 1.5em;
-            color: #ff6b6b;
-        }
-
-        .score-board {
-            background: #1f1f1f;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 2px solid #ff6b6b;
-        }
-
-        .score-board h3 {
-            color: #ffeb3b;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-
-        .score-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: #2a2a2a;
-            margin: 8px 0;
-            border-radius: 8px;
-            border-left: 4px solid #ff6b6b;
-            font-size: 1em;
-        }
-
-        .score-name {
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .score-hits {
-            color: #ff6b6b;
-            font-weight: bold;
-        }
-
-        .empty-message {
-            color: #999;
-            font-size: 1.1em;
-            padding: 20px;
-        }
-
-        .reset-button {
-            background: #555;
-            margin-top: 20px;
-            font-size: 0.9em;
-        }
-
-        .reset-button:hover {
-            background: #666;
-        }
-
-        .hit-effect {
-            animation: hitEffect 0.3s ease-out;
-        }
-
-        @keyframes hitEffect {
-            0% {
-                transform: scale(1) rotate(0deg);
-            }
-            50% {
-                transform: scale(1.3) rotate(20deg);
-            }
-            100% {
-                transform: scale(1) rotate(-10deg);
-            }
-        }
-
-        .player-section {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        .player-section input {
-            flex: 1;
-            padding: 15px;
-            font-size: 1.1em;
-            border: 2px solid #ffeb3b;
-            background: #2a2a2a;
-            color: #fff;
-            border-radius: 10px;
-            min-height: 50px;
-        }
-
-        .player-section input:focus {
-            outline: none;
-            background: #333;
-            border-color: #ffd54f;
-        }
-
-        .player-section button {
-            background: #ffeb3b;
-            color: #1a1a1a;
-            padding: 15px 30px;
-            min-height: 50px;
-            font-weight: bold;
-        }
-
-        .player-section button:hover {
-            background: #ffd54f;
-        }
-
-        .boss-info {
-            background: #2a2a2a;
-            border: 3px solid #ff6b6b;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .hp-bar-container {
-            width: 100%;
-            height: 40px;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .hp-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #4caf50, #8bc34a);
-            width: 100%;
-            transition: width 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #000;
-        }
-
-        .hp-text {
-            text-align: center;
-            color: #fff;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        .players-board {
-            background: #1f1f1f;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 2px solid #ffeb3b;
-        }
-
-        .players-board h3 {
-            color: #ffeb3b;
-            margin-bottom: 15px;
-        }
-
-        .player-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: #2a2a2a;
-            margin: 8px 0;
-            border-radius: 8px;
-            border-left: 4px solid #ffeb3b;
-            font-size: 1em;
-        }
-
-        .player-name {
-            color: #ffeb3b;
-            font-weight: bold;
-            flex: 1;
-        }
-
-        .player-damage {
-            color: #ff6b6b;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: #1f1f1f;
-            border: 3px solid #ffeb3b;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-content h2 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        .defeat-stat {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: #2a2a2a;
-            margin: 10px 0;
-            border-radius: 8px;
-            border-left: 4px solid #ff6b6b;
-            font-size: 1.1em;
-        }
-
-        .defeat-label {
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .defeat-value {
-            color: #ff6b6b;
-            font-weight: bold;
-        }
-
-        .defeat-stat.top {
-            border-left-color: #ffeb3b;
-            background: #3a3a2a;
-        }
-
-        .defeat-value.top {
-            color: #ffeb3b;
-        }
-
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            .hammer {
-                font-size: 5em;
-            }
-
-            .player-section {
-                flex-direction: column;
-            }
-
-            .player-section input, .player-section button {
-                width: 100%;
-            }
-
-            .modal-content {
-                padding: 20px;
-            }
-
-            .modal-content h2 {
-                font-size: 1.8em;
-            }
-
-            .death-note-book {
-                width: 150px;
-                height: 220px;
-            }
-
-            .death-note-title {
-                font-size: 1.5em;
-            }
-
-            .death-note-subtitle {
-                font-size: 0.9em;
-            }
-
-            .death-note-pages {
-                width: 90vw;
-                height: 60vh;
-                max-width: 500px;
-            }
-
-            .death-note-input {
-                font-size: 1em;
-            }
-
-            .death-note-arrow {
-                font-size: 1.5em;
-            }
-
-            .death-note-button {
-                font-size: 0.9em;
-                padding: 10px 15px;
-            }
-
-            .close-note-button {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2em;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데스노트 — 블랙리스트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Pirata+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cover:#0b0b0c;
+  --cover-edge:#232326;
+  --paper:#e7dfc8;
+  --paper-dark:#d8cfb4;
+  --line:rgba(58,46,28,.16);
+  --ink:#1b1713;
+  --blood:#9b1b1b;
+  --blood-hot:#c92a2a;
+  --text:#e9e5dc;
+  --muted:#8d887c;
+  --gothic:'Pirata One', 'Times New Roman', serif;
+  --hand:'Nanum Pen Script', 'Segoe Script', cursive;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'Malgun Gothic','Apple SD Gothic Neo',system-ui,sans-serif;
+  font-size:17px;
+  line-height:1.6;
+  color:var(--text);
+  background:#050505;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, #1a1a1d 0%, #050505 60%);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 16px;
+  overflow-x:hidden;
+}
+
+.stage{width:100%;max-width:880px}
+
+.screen{display:none}
+.screen.is-active{display:block;animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- 표지 ---------- */
+.cover-wrap{display:flex;flex-direction:column;align-items:center;gap:28px}
+
+.cover{
+  width:260px;
+  height:368px;
+  background:
+    repeating-linear-gradient(92deg, rgba(255,255,255,.012) 0 2px, transparent 2px 5px),
+    linear-gradient(145deg,#1a1a1d 0%, var(--cover) 45%, #000 100%);
+  border-radius:4px 10px 10px 4px;
+  border:1px solid #2b2b2f;
+  border-left:7px solid #141417;
+  box-shadow:
+    0 2px 0 #000,
+    0 30px 60px -20px rgba(0,0,0,.95),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s;
+  position:relative;
+}
+.cover:hover{transform:translateY(-8px) rotate(-.6deg);box-shadow:0 2px 0 #000,0 44px 70px -22px rgba(0,0,0,1)}
+.cover:active{transform:translateY(-2px) scale(.99)}
+
+.cover::after{
+  content:'';position:absolute;inset:14px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:3px;pointer-events:none;
+}
+
+.cover h1{
+  font-family:var(--gothic);
+  font-size:42px;
+  font-weight:400;
+  line-height:1.05;
+  letter-spacing:1px;
+  color:#f2efe8;
+  text-align:center;
+  text-shadow:0 2px 10px rgba(0,0,0,.8);
+}
+.cover .kr{
+  font-family:var(--hand);
+  font-size:24px;
+  color:#9a958a;
+  letter-spacing:2px;
+}
+
+.hint{color:var(--muted);font-size:17px;letter-spacing:.5px}
+.hint::before{content:'▸ ';color:var(--blood-hot)}
+
+/* ---------- 펼친 노트 ---------- */
+.note{
+  display:flex;
+  background:var(--paper);
+  border-radius:3px;
+  box-shadow:
+    0 30px 70px -24px rgba(0,0,0,.95),
+    0 0 0 10px #111 inset,
+    0 0 0 1px #2a2a2a;
+  padding:10px;
+  position:relative;
+  animation:open .5s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes open{from{transform:perspective(1400px) rotateY(-28deg);opacity:0}to{transform:none;opacity:1}}
+
+.note::before{ /* 가운데 접힘 */
+  content:'';position:absolute;left:50%;top:10px;bottom:10px;width:34px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,rgba(90,75,50,.22),rgba(90,75,50,.3),rgba(90,75,50,.22),transparent);
+  pointer-events:none;z-index:2;
+}
+
+.page{
+  flex:1;
+  min-width:0;
+  padding:28px 26px;
+  background-image:repeating-linear-gradient(transparent 0 33px, var(--line) 33px 34px);
+  background-position:0 10px;
+}
+.page+.page{border-left:1px solid rgba(90,75,50,.15)}
+
+.page h2{
+  font-family:var(--gothic);
+  font-size:26px;
+  font-weight:400;
+  color:var(--ink);
+  letter-spacing:.5px;
+  margin-bottom:14px;
+  line-height:34px;
+}
+
+.rules{list-style:none;font-family:var(--hand);font-size:22px;color:#4a3f30;line-height:34px}
+.rules li{padding-left:18px;position:relative}
+.rules li::before{content:'·';position:absolute;left:4px;color:var(--blood)}
+
+/* 기입란 */
+.field{margin-bottom:6px}
+.field label{
+  display:block;
+  font-family:var(--hand);
+  font-size:20px;
+  color:#6b5c46;
+  line-height:34px;
+}
+.write{
+  width:100%;
+  font-family:var(--hand);
+  font-size:30px;
+  line-height:34px;
+  color:var(--ink);
+  background:transparent;
+  border:none;
+  border-bottom:2px solid rgba(60,48,30,.35);
+  padding:0 4px 2px;
+  outline:none;
+}
+.write::placeholder{color:rgba(60,48,30,.3)}
+.write:focus{border-bottom-color:var(--blood)}
+.write[readonly]{color:var(--blood);border-bottom-style:dashed}
+
+.arrow{
+  font-family:var(--gothic);
+  font-size:34px;
+  line-height:34px;
+  color:var(--blood);
+  letter-spacing:6px;
+  margin:10px 0;
+  animation:bleed 1.6s ease-in-out infinite;
+}
+@keyframes bleed{0%,100%{opacity:.45}50%{opacity:1}}
+
+.seal{
+  width:100%;
+  font-family:var(--gothic);
+  font-size:21px;
+  letter-spacing:1px;
+  color:#f0ece4;
+  background:linear-gradient(180deg,var(--blood-hot),var(--blood));
+  border:none;
+  border-radius:2px;
+  padding:13px 18px;
+  margin-top:14px;
+  cursor:pointer;
+  box-shadow:0 3px 0 #5e1010;
+  transition:transform .12s, box-shadow .12s, filter .2s;
+}
+.seal:hover{filter:brightness(1.12)}
+.seal:active{transform:translateY(3px);box-shadow:0 0 0 #5e1010}
+
+.ghost{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:16px;
+  margin-top:18px;text-decoration:underline;text-underline-offset:4px;
+}
+.ghost:hover{color:var(--text)}
+
+/* ---------- 게임 ---------- */
+.target-line{
+  font-family:var(--hand);
+  font-size:34px;
+  line-height:34px;
+  color:var(--blood);
+  text-decoration:line-through;
+  text-decoration-color:rgba(155,27,27,.5);
+  word-break:break-all;
+  margin-bottom:34px;
+}
+
+.hp{margin-bottom:12px}
+.hp-track{
+  height:14px;
+  background:rgba(40,32,20,.25);
+  border:1px solid rgba(60,48,30,.35);
+  border-radius:2px;
+  overflow:hidden;
+}
+.hp-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--blood),var(--blood-hot));
+  transition:width .25s ease;
+}
+.hp-text{
+  font-family:var(--hand);
+  font-size:21px;
+  color:#5a4c38;
+  line-height:34px;
+  display:flex;justify-content:space-between;
+}
+
+.doll-stage{
+  display:flex;justify-content:center;
+  padding:6px 0 10px;
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.doll{width:170px;height:auto;overflow:visible;transition:transform .08s}
+.doll-stage:active .doll{transform:scale(.97)}
+.doll.hit{animation:whack .34s cubic-bezier(.3,1.4,.5,1)}
+@keyframes whack{
+  0%{transform:translateY(0) rotate(0)}
+  28%{transform:translateY(12px) scaleY(.86) rotate(-4deg)}
+  60%{transform:translateY(-6px) scaleY(1.04) rotate(3deg)}
+  100%{transform:none}
+}
+.doll.down{transform:rotate(90deg) translateX(14px);opacity:.55;transition:transform .5s, opacity .5s}
+
+.mallet{
+  position:absolute;
+  font-size:54px;
+  pointer-events:none;
+  opacity:0;
+  transform-origin:80% 80%;
+}
+.mallet.swing{animation:swing .34s ease-out}
+@keyframes swing{
+  0%{opacity:1;transform:translate(26px,-74px) rotate(-62deg)}
+  45%{opacity:1;transform:translate(6px,-18px) rotate(8deg)}
+  100%{opacity:0;transform:translate(6px,-14px) rotate(2deg)}
+}
+
+.pop{
+  position:absolute;
+  font-family:var(--gothic);
+  font-size:26px;
+  color:var(--blood-hot);
+  pointer-events:none;
+  animation:pop .7s ease-out forwards;
+  text-shadow:0 1px 0 rgba(255,255,255,.5);
+}
+@keyframes pop{
+  0%{opacity:1;transform:translate(0,0) scale(.8)}
+  100%{opacity:0;transform:translate(var(--dx,18px),-56px) scale(1.25)}
+}
+
+.tap-cue{font-family:var(--hand);font-size:21px;color:#6b5c46;text-align:center;line-height:34px}
+
+/* 명단 */
+.list{list-style:none;margin-bottom:4px}
+.list li{
+  display:flex;justify-content:space-between;gap:10px;
+  font-family:var(--hand);font-size:23px;line-height:34px;
+  color:#4a3f30;
+}
+.list li.me{color:var(--blood)}
+.list .dmg{white-space:nowrap}
+.empty{font-family:var(--hand);font-size:21px;color:#8b7d66;line-height:34px}
+
+.log li{display:block;line-height:34px;color:#5a4c38;font-family:var(--hand);font-size:21px}
+.log .who{color:var(--blood)}
+
+/* ---------- 모달 ---------- */
+.modal{
+  position:fixed;inset:0;z-index:50;
+  background:rgba(0,0,0,.88);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal.is-open{display:flex;animation:fade .3s ease}
+.modal-card{
+  background:var(--paper);
+  color:var(--ink);
+  width:100%;max-width:460px;
+  padding:34px 30px;
+  border-radius:3px;
+  box-shadow:0 0 0 10px #111, 0 40px 80px -20px #000;
+  text-align:center;
+  background-image:repeating-linear-gradient(transparent 0 33px, var(--line) 33px 34px);
+  background-position:0 18px;
+}
+.modal-card h2{
+  font-family:var(--hand);
+  font-size:36px;font-weight:400;line-height:34px;
+  color:var(--blood);margin-bottom:34px;
+}
+.modal-card .when{font-family:var(--hand);font-size:20px;color:#6b5c46;line-height:34px;margin-bottom:34px}
+.modal-card .list{text-align:left;margin-bottom:34px}
+
+@media (max-width:720px){
+  .note{flex-direction:column;padding:8px}
+  .note::before{display:none}
+  .page{padding:20px 18px}
+  .page+.page{border-left:none;border-top:1px solid rgba(90,75,50,.2)}
+  .cover{width:218px;height:310px}
+  .cover h1{font-size:34px}
+  .target-line{font-size:28px}
+  .doll{width:140px}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div id="deathNoteUI" class="death-note-ui">
-            <div class="death-note-book" onclick="openDeathNote()">
-                <div class="death-note-cover">
-                    <div class="death-note-title">DEATH NOTE</div>
-                    <div class="death-note-subtitle">블랙리스트</div>
-                </div>
-            </div>
-            <p style="text-align: center; color: #999; margin-top: 30px; font-size: 1.2em;">노트를 터치하세요</p>
-        </div>
 
-        <div id="deathNoteOpen" class="death-note-open" style="display: none;">
-            <div class="death-note-pages">
-                <div class="death-note-page-left"></div>
-                <div class="death-note-page-right">
-                    <div class="page-content">
-                        <input type="text" id="playerName" placeholder="이름을 적으세요..." maxlength="20" class="death-note-input">
-                        <div class="death-note-arrow">>>></div>
-                        <button onclick="joinGame()" class="death-note-button">세상에서 제거</button>
-                    </div>
-                </div>
-            </div>
-            <button onclick="closeDeathNote()" class="close-note-button">✕</button>
-        </div>
+<div class="stage">
 
-        <div id="waitingArea" style="display: none; text-align: center; color: #999; margin: 20px 0;">
-            <p>플레이어 이름을 입력하고 입장하세요!</p>
-        </div>
-
-        <div id="gameContainer" style="display: none;">
-            <div class="boss-info">
-                <h2 id="bossName" style="color: #ff6b6b; font-size: 1.8em; margin-bottom: 10px;">블랙리스트</h2>
-                <div class="hp-bar-container">
-                    <div class="hp-bar" id="hpBar"></div>
-                </div>
-                <div class="hp-text">
-                    <span id="hpDisplay">100 / 100</span>
-                </div>
-            </div>
-
-            <div class="game-area">
-                <div class="boss-character" id="bossCharacter">
-                    <div class="doll-head">
-                        <div class="doll-eyes">
-                            <span class="doll-eye">○</span>
-                            <span class="doll-eye">○</span>
-                        </div>
-                        <div class="doll-mouth">︿</div>
-                    </div>
-                    <div class="doll-body">
-                        <div class="doll-body-line"></div>
-                    </div>
-                    <div class="doll-arms">
-                        <span class="doll-arm-left">∧</span>
-                        <span class="doll-arm-right">∧</span>
-                    </div>
-                    <div class="doll-legs">
-                        <span class="doll-leg">Ⅰ</span>
-                        <span class="doll-leg">Ⅰ</span>
-                    </div>
-                </div>
-                <div class="hammer" id="hammer" onclick="hitBoss()">⚒️</div>
-                <p style="color: #999; margin-top: 20px;">망치를 클릭해서 때려!</p>
-                <p id="playerInfo" style="color: #ffeb3b; font-size: 1.2em; margin-top: 10px;"></p>
-            </div>
-
-            <div class="players-board">
-                <h3>👥 참여 중인 플레이어</h3>
-                <div id="playersList"></div>
-            </div>
-
-            <div class="score-board">
-                <h3>⚔️ 처치 기록</h3>
-                <div id="scoreList" class="empty-message">아직 처치된 대상이 없습니다.</div>
-                <button class="reset-button" onclick="resetAllData()">전체 초기화</button>
-            </div>
-        </div>
-
-        <div id="bossDefeatedModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <h2 style="color: #ffeb3b; margin-bottom: 20px; font-family: 'Fredoka One', cursive;">📔 세상에서 없애버렸습니다.</h2>
-                <div id="defeatStats"></div>
-                <button onclick="closeBossModal()" style="margin-top: 20px; font-family: 'Fredoka One', cursive;">다시 시작</button>
-            </div>
-        </div>
+  <!-- 1. 표지 -->
+  <section class="screen is-active" id="s-cover">
+    <div class="cover-wrap">
+      <div class="cover" id="coverBook">
+        <h1>DEATH<br>NOTE</h1>
+        <span class="kr">블랙리스트</span>
+      </div>
+      <p class="hint">노트를 펼친다</p>
     </div>
+  </section>
 
-    <script>
-        const BOSS_MAX_HP = 100;
-        let gameState = {
-            currentBoss: null,
-            bossHp: BOSS_MAX_HP,
-            currentPlayer: null,
-            players: {},
-            bossDefeats: []
-        };
+  <!-- 2. 기입 -->
+  <section class="screen" id="s-write">
+    <div class="note">
+      <div class="page">
+        <h2>How to use it</h2>
+        <ul class="rules">
+          <li>이 노트에 이름이 적힌 자는 사라진다.</li>
+          <li>얼굴을 떠올리며 적어야 한다.</li>
+          <li>적힌 자는 망치 100대를 맞는다.</li>
+          <li>여럿이 함께 때릴 수 있다.</li>
+          <li>가장 많이 때린 자의 이름이 남는다.</li>
+        </ul>
+      </div>
+      <div class="page">
+        <div class="field">
+          <label>이름</label>
+          <input class="write" id="targetInput" maxlength="24" placeholder="진상의 이름" autocomplete="off">
+        </div>
+        <div class="arrow">&gt;&gt;&gt;</div>
+        <div class="field">
+          <label>집행자 (당신)</label>
+          <input class="write" id="meInput" maxlength="16" placeholder="내 이름" autocomplete="off">
+        </div>
+        <button class="seal" id="sealBtn">세상에서 지운다</button>
+        <button class="ghost" id="closeBtn">노트를 덮는다</button>
+      </div>
+    </div>
+  </section>
 
-        // 로컬 스토리지에서 데이터 로드
-        function loadGameState() {
-            const saved = localStorage.getItem('bossGameState');
-            if (saved) {
-                gameState = JSON.parse(saved);
-            }
-        }
+  <!-- 3. 집행 -->
+  <section class="screen" id="s-game">
+    <div class="note">
+      <div class="page">
+        <div class="target-line" id="targetName"></div>
+        <div class="hp">
+          <div class="hp-track"><div class="hp-fill" id="hpFill"></div></div>
+          <div class="hp-text"><span>남은 체력</span><span id="hpNum"></span></div>
+        </div>
+        <div class="doll-stage" id="dollStage">
+          <svg class="doll" id="doll" viewBox="0 0 140 180" aria-label="인형">
+            <g stroke="#8a7554" stroke-width="3" stroke-linecap="round" fill="none">
+              <path d="M44 92 L18 118"/><path d="M96 92 L122 118"/>
+              <path d="M56 136 L50 170"/><path d="M84 136 L90 170"/>
+            </g>
+            <circle cx="18" cy="118" r="7" fill="#cbb48c" stroke="#8a7554" stroke-width="2.5"/>
+            <circle cx="122" cy="118" r="7" fill="#cbb48c" stroke="#8a7554" stroke-width="2.5"/>
+            <ellipse cx="50" cy="172" rx="9" ry="6" fill="#cbb48c" stroke="#8a7554" stroke-width="2.5"/>
+            <ellipse cx="90" cy="172" rx="9" ry="6" fill="#cbb48c" stroke="#8a7554" stroke-width="2.5"/>
+            <rect x="42" y="82" width="56" height="58" rx="20" fill="#cbb48c" stroke="#8a7554" stroke-width="2.5"/>
+            <path d="M56 100 h28 M56 112 h28" stroke="#b09772" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round"/>
+            <path d="M62 78 l4 6 M70 77 l0 7 M78 78 l-4 6" stroke="#8a7554" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="70" cy="48" r="32" fill="#d6c097" stroke="#8a7554" stroke-width="2.5"/>
+            <path d="M70 16 q-10 8 -4 16" stroke="#8a7554" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <circle cx="56" cy="58" r="4" fill="#e59aa0" opacity=".5"/>
+            <circle cx="84" cy="58" r="4" fill="#e59aa0" opacity=".5"/>
+            <g id="face"></g>
+            <g id="wounds"></g>
+          </svg>
+          <span class="mallet" id="mallet">🔨</span>
+        </div>
+        <p class="tap-cue">인형을 두드린다</p>
+      </div>
+      <div class="page">
+        <h2>집행자</h2>
+        <ul class="list" id="players"></ul>
+        <h2 style="margin-top:34px">지워진 이름</h2>
+        <ul class="list log" id="history"></ul>
+        <button class="ghost" id="wipeBtn">기록을 태운다</button>
+      </div>
+    </div>
+  </section>
 
-        // 로컬 스토리지에 데이터 저장
-        function saveGameState() {
-            localStorage.setItem('bossGameState', JSON.stringify(gameState));
-        }
+</div>
 
-        // 주기적으로 다른 탭의 변화 감지 (멀티탭 동기화)
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'bossGameState') {
-                gameState = JSON.parse(e.newValue || '{}');
-                updateGameDisplay();
-            }
-        });
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <h2 id="modalTitle"></h2>
+    <p class="when" id="modalWhen"></p>
+    <ul class="list" id="modalList"></ul>
+    <button class="seal" id="againBtn">새 이름을 적는다</button>
+  </div>
+</div>
 
-        function openDeathNote() {
-            document.getElementById('deathNoteUI').style.display = 'none';
-            document.getElementById('deathNoteOpen').style.display = 'block';
-            document.getElementById('playerName').focus();
-        }
+<script>
+const KEY = 'deathnote.v2';
+const MAX_HP = 100;
+const FACES = {
+  calm:  '<circle cx="59" cy="46" r="3.4" fill="#2b2b2b"/><circle cx="81" cy="46" r="3.4" fill="#2b2b2b"/><path d="M63 60 q7 5 14 0" stroke="#2b2b2b" stroke-width="2.5" fill="none" stroke-linecap="round"/>',
+  panic: '<circle cx="59" cy="45" r="5" fill="#2b2b2b"/><circle cx="81" cy="45" r="5" fill="#2b2b2b"/><ellipse cx="70" cy="62" rx="6" ry="7" fill="#2b2b2b"/>',
+  wreck: '<path d="M54 41 l9 9 M63 41 l-9 9 M77 41 l9 9 M86 41 l-9 9" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/><path d="M62 63 q8 -6 16 0" stroke="#2b2b2b" stroke-width="2.5" fill="none" stroke-linecap="round"/>'
+};
 
-        function closeDeathNote() {
-            document.getElementById('deathNoteUI').style.display = 'block';
-            document.getElementById('deathNoteOpen').style.display = 'none';
-            document.getElementById('playerName').value = '';
-        }
+let myName = null;
+let db = load();
 
-        function joinGame() {
-            const input = document.getElementById('playerName');
-            const name = input.value.trim();
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { target:null, hp:MAX_HP, players:{}, wounds:[], history:[] };
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(db)); }catch(e){}
+}
 
-            if (name === '') {
-                alert('이름을 적으세요!');
-                return;
-            }
+const $ = id => document.getElementById(id);
+const show = id => document.querySelectorAll('.screen')
+  .forEach(s => s.classList.toggle('is-active', s.id === id));
 
-            if (name.length > 20) {
-                alert('20글자 이하로 입력해주세요!');
-                return;
-            }
+/* ---- 표지 → 기입 ---- */
+$('coverBook').onclick = () => {
+  show('s-write');
+  const t = $('targetInput');
+  if(db.target){
+    t.value = db.target;
+    t.readOnly = true;
+    $('meInput').focus();
+  }else{
+    t.readOnly = false;
+    t.focus();
+  }
+};
+$('closeBtn').onclick = () => show('s-cover');
 
-            gameState.currentPlayer = name;
+/* ---- 집행 시작 ---- */
+$('sealBtn').onclick = () => {
+  const target = $('targetInput').value.trim();
+  const me = $('meInput').value.trim();
+  if(!target){ $('targetInput').focus(); return; }
+  if(!me){ $('meInput').focus(); return; }
 
-            // 새 플레이어 추가
-            if (!gameState.players[name]) {
-                gameState.players[name] = {
-                    damage: 0,
-                    hits: 0
-                };
-            }
+  if(!db.target){ db.target = target; db.hp = MAX_HP; }
+  if(!db.players[me]) db.players[me] = { damage:0, hits:0 };
+  myName = me;
+  save();
+  show('s-game');
+  render();
+};
 
-            saveGameState();
-            input.value = '';
-            document.getElementById('deathNoteUI').style.display = 'none';
-            document.getElementById('deathNoteOpen').style.display = 'none';
-            document.getElementById('waitingArea').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'block';
+[$('targetInput'), $('meInput')].forEach(el => {
+  el.onkeydown = e => { if(e.key === 'Enter') $('sealBtn').click(); };
+});
 
-            updateGameDisplay();
-        }
+/* ---- 타격 ---- */
+$('dollStage').onclick = e => {
+  if(!myName || db.hp <= 0) return;
 
-        function hitBoss() {
-            if (!gameState.currentPlayer) return;
+  const dmg = 4 + Math.floor(Math.random() * 5);
+  db.hp = Math.max(0, db.hp - dmg);
+  db.players[myName].damage += dmg;
+  db.players[myName].hits += 1;
+  if(db.wounds.length < 14){
+    db.wounds.push({ x: 46 + Math.random()*48, y: 30 + Math.random()*100 });
+  }
+  save();
 
-            const damage = Math.floor(Math.random() * 5) + 8; // 8~12 데미지
-            gameState.bossHp = Math.max(0, gameState.bossHp - damage);
-            gameState.players[gameState.currentPlayer].damage += damage;
-            gameState.players[gameState.currentPlayer].hits += 1;
+  const doll = $('doll');
+  doll.classList.remove('hit');
+  void doll.offsetWidth;
+  doll.classList.add('hit');
 
-            const hammer = document.getElementById('hammer');
-            const boss = document.getElementById('bossCharacter');
-            hammer.classList.add('hit-effect');
-            boss.style.animation = 'none';
-            setTimeout(() => {
-                boss.style.animation = 'bossHit 0.3s ease-out';
-            }, 0);
+  const m = $('mallet');
+  m.classList.remove('swing');
+  void m.offsetWidth;
+  m.classList.add('swing');
 
-            // 화면 흔들림
-            document.body.style.animation = 'none';
-            setTimeout(() => {
-                document.body.style.animation = 'shake 0.2s';
-            }, 0);
+  floatDamage(e, dmg);
+  render();
 
-            setTimeout(() => {
-                hammer.classList.remove('hit-effect');
-                boss.style.animation = 'bossPulse 2s infinite';
-            }, 300);
+  if(db.hp <= 0) finish();
+};
 
-            saveGameState();
-            updateGameDisplay();
+function floatDamage(e, dmg){
+  const stage = $('dollStage');
+  const box = stage.getBoundingClientRect();
+  const el = document.createElement('span');
+  el.className = 'pop';
+  el.textContent = '-' + dmg;
+  el.style.left = ((e.clientX ?? box.left + box.width/2) - box.left) + 'px';
+  el.style.top  = ((e.clientY ?? box.top + box.height/2) - box.top) + 'px';
+  el.style.setProperty('--dx', (Math.random()*44 - 22) + 'px');
+  stage.appendChild(el);
+  setTimeout(() => el.remove(), 700);
+}
 
-            // 보스 처치 확인
-            if (gameState.bossHp <= 0) {
-                defeatBoss();
-            }
-        }
+/* ---- 처치 ---- */
+function finish(){
+  const record = {
+    target: db.target,
+    at: new Date().toLocaleString('ko-KR', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}),
+    players: ranked()
+  };
+  db.history.push(record);
+  save();
 
-        function defeatBoss() {
-            // 처치 기록 저장
-            const defeatRecord = {
-                timestamp: new Date().toLocaleString('ko-KR'),
-                bossName: gameState.currentBoss || '블랙리스트',
-                players: Object.entries(gameState.players).map(([name, stats]) => ({
-                    name,
-                    damage: stats.damage,
-                    hits: stats.hits
-                })).sort((a, b) => b.damage - a.damage)
-            };
+  $('doll').classList.add('down');
+  setTimeout(() => openModal(record), 620);
+}
 
-            gameState.bossDefeats.push(defeatRecord);
+function openModal(record){
+  $('modalTitle').textContent = '세상에서 없애버렸습니다.';
+  $('modalWhen').textContent = record.target + ' — ' + record.at;
+  $('modalList').innerHTML = record.players.map((p, i) =>
+    `<li class="${p.name === myName ? 'me' : ''}">
+       <span>${i === 0 ? '1위 ' : (i+1) + '위 '}${esc(p.name)}</span>
+       <span class="dmg">${p.damage}대 · ${p.hits}번</span>
+     </li>`).join('');
+  $('modal').classList.add('is-open');
+}
 
-            // 모달 표시
-            showDefeatModal(defeatRecord);
+$('againBtn').onclick = () => {
+  $('modal').classList.remove('is-open');
+  db.target = null;
+  db.hp = MAX_HP;
+  db.players = {};
+  db.wounds = [];
+  myName = null;
+  save();
+  $('doll').classList.remove('down');
+  $('targetInput').value = '';
+  $('targetInput').readOnly = false;
+  $('meInput').value = '';
+  show('s-cover');
+};
 
-            saveGameState();
-            updateScoreBoard();
-        }
+$('wipeBtn').onclick = () => {
+  if(!confirm('모든 기록을 태웁니다. 되돌릴 수 없습니다.')) return;
+  db.history = [];
+  save();
+  render();
+};
 
-        function showDefeatModal(defeatRecord) {
-            const modal = document.getElementById('bossDefeatedModal');
-            const stats = document.getElementById('defeatStats');
+/* ---- 렌더 ---- */
+function ranked(){
+  return Object.entries(db.players)
+    .map(([name, s]) => ({ name, ...s }))
+    .sort((a, b) => b.damage - a.damage);
+}
 
-            let statsHtml = `
-                <p style="color: #999; margin-bottom: 20px; font-family: 'Fredoka One', cursive;">
-                    ${defeatRecord.timestamp}
-                </p>
-            `;
+function render(){
+  $('targetName').textContent = db.target || '';
+  const pct = (db.hp / MAX_HP) * 100;
+  $('hpFill').style.width = pct + '%';
+  $('hpNum').textContent = db.hp + ' / ' + MAX_HP;
 
-            defeatRecord.players.forEach((player, index) => {
-                const isTop = index === 0;
-                statsHtml += `
-                    <div class="defeat-stat ${isTop ? 'top' : ''}">
-                        <span class="defeat-label" style="font-family: 'Fredoka One', cursive;">
-                            ${isTop ? '👑 ' : ''}${player.name}
-                        </span>
-                        <span class="defeat-value ${isTop ? 'top' : ''}" style="font-family: 'Fredoka One', cursive;">
-                            ${player.damage} 데미지 (${player.hits}회)
-                        </span>
-                    </div>
-                `;
-            });
+  $('face').innerHTML = pct > 66 ? FACES.calm : pct > 33 ? FACES.panic : FACES.wreck;
+  $('wounds').innerHTML = db.wounds.map(w =>
+    `<path d="M${w.x-5} ${w.y-5} l10 10 M${w.x+5} ${w.y-5} l-10 10"
+       stroke="#9b1b1b" stroke-width="2.5" stroke-linecap="round" opacity=".75"/>`).join('');
 
-            stats.innerHTML = statsHtml;
-            modal.style.display = 'flex';
-        }
+  const list = ranked();
+  $('players').innerHTML = list.length
+    ? list.map((p, i) => `<li class="${p.name === myName ? 'me' : ''}">
+        <span>${i === 0 ? '👑 ' : ''}${esc(p.name)}</span>
+        <span class="dmg">${p.damage}대</span></li>`).join('')
+    : '<li class="empty">아직 아무도 없다.</li>';
 
-        function closeBossModal() {
-            document.getElementById('bossDefeatedModal').style.display = 'none';
-            resetBoss();
-        }
+  $('history').innerHTML = db.history.length
+    ? db.history.slice().reverse().slice(0, 8).map(h =>
+        `<li>${esc(h.target)} — <span class="who">${esc(h.players[0]?.name ?? '?')}</span> 외 ${Math.max(0, h.players.length-1)}명</li>`).join('')
+    : '<li class="empty">아직 비어 있다.</li>';
+}
 
-        function resetBoss() {
-            gameState.bossHp = BOSS_MAX_HP;
-            gameState.players = {};
-            gameState.currentPlayer = null;
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
-            document.getElementById('gameContainer').style.display = 'none';
-            document.getElementById('deathNoteUI').style.display = 'block';
-            document.getElementById('deathNoteOpen').style.display = 'none';
-            document.getElementById('playerName').value = '';
-            document.getElementById('waitingArea').style.display = 'none';
+/* ---- 다른 탭과 동기화 ---- */
+window.addEventListener('storage', e => {
+  if(e.key !== KEY || !e.newValue) return;
+  db = JSON.parse(e.newValue);
+  if(myName && !db.players[myName]) myName = null;
+  render();
+  if(db.hp <= 0 && !$('modal').classList.contains('is-open') &&
+     $('s-game').classList.contains('is-active')){
+    $('doll').classList.add('down');
+    const last = db.history[db.history.length - 1];
+    if(last) setTimeout(() => openModal(last), 620);
+  }
+});
 
-            saveGameState();
-            updateScoreBoard();
-        }
-
-        function updateGameDisplay() {
-            // HP 바 업데이트
-            const hpPercent = (gameState.bossHp / BOSS_MAX_HP) * 100;
-            const hpBar = document.getElementById('hpBar');
-            hpBar.style.width = hpPercent + '%';
-
-            // HP 텍스트 업데이트
-            document.getElementById('hpDisplay').textContent =
-                `${gameState.bossHp} / ${BOSS_MAX_HP}`;
-
-            // 플레이어 정보
-            if (gameState.currentPlayer) {
-                const player = gameState.players[gameState.currentPlayer];
-                document.getElementById('playerInfo').innerHTML = `
-                    <span>${gameState.currentPlayer}</span><br>
-                    📊 누적 데미지: ${player.damage} | 타격: ${player.hits}회
-                `;
-            }
-
-            // 플레이어 목록 업데이트
-            updatePlayersList();
-        }
-
-        function updatePlayersList() {
-            const playersList = document.getElementById('playersList');
-
-            if (Object.keys(gameState.players).length === 0) {
-                playersList.innerHTML = '<div class="empty-message">참여 중인 플레이어가 없습니다.</div>';
-                return;
-            }
-
-            const sortedPlayers = Object.entries(gameState.players)
-                .map(([name, stats]) => ({ name, ...stats }))
-                .sort((a, b) => b.damage - a.damage);
-
-            playersList.innerHTML = sortedPlayers
-                .map((player, index) => `
-                    <div class="player-item">
-                        <span class="player-name">
-                            ${index === 0 ? '👑 ' : ''}${player.name}
-                        </span>
-                        <span class="player-damage">${player.damage} 💥</span>
-                    </div>
-                `)
-                .join('');
-        }
-
-        function updateScoreBoard() {
-            const scoreList = document.getElementById('scoreList');
-
-            if (gameState.bossDefeats.length === 0) {
-                scoreList.innerHTML = '<div class="empty-message">아직 처치된 보스가 없습니다.</div>';
-                return;
-            }
-
-            scoreList.innerHTML = gameState.bossDefeats
-                .reverse()
-                .map((defeat, index) => {
-                    const topPlayer = defeat.players[0];
-                    return `
-                        <div class="score-item">
-                            <div>
-                                <div style="color: #ffeb3b; font-weight: bold;">
-                                    ${defeat.bossName} (${defeat.timestamp})
-                                </div>
-                                <div style="color: #ff6b6b; font-size: 0.9em; margin-top: 5px;">
-                                    🏆 ${topPlayer.name} - ${topPlayer.damage} 데미지
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                })
-                .join('');
-        }
-
-        function resetAllData() {
-            if (confirm('⚠️ 모든 데이터를 초기화하시겠습니까? (복구 불가)')) {
-                gameState = {
-                    currentBoss: null,
-                    bossHp: BOSS_MAX_HP,
-                    currentPlayer: null,
-                    players: {},
-                    bossDefeats: []
-                };
-                saveGameState();
-                resetBoss();
-            }
-        }
-
-        // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            loadGameState();
-
-            const playerNameInput = document.getElementById('playerName');
-            playerNameInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    joinGame();
-                }
-            });
-
-            updateScoreBoard();
-        });
-
-        // 흔들림 애니메이션
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-5px); }
-                75% { transform: translateX(5px); }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+render();
+</script>
 </body>
 </html>
