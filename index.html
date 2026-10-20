@@ -337,102 +337,133 @@
         }
 
         .boss-character {
-            width: 150px;
-            height: 180px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            border: 3px solid #ff0000;
-            border-radius: 15px;
+            width: 120px;
             margin-bottom: 30px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5), inset 0 0 20px rgba(255, 0, 0, 0.2);
-            animation: bossPulse 2s infinite;
+            animation: dollPulse 2s infinite;
             position: relative;
         }
 
-        @keyframes bossPulse {
+        @keyframes dollPulse {
             0%, 100% {
-                box-shadow: 0 0 30px rgba(255, 0, 0, 0.5), inset 0 0 20px rgba(255, 0, 0, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 50px rgba(255, 0, 0, 0.8), inset 0 0 30px rgba(255, 0, 0, 0.4);
-            }
-        }
-
-        .boss-character::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(255, 0, 0, 0.1) 0px,
-                rgba(255, 0, 0, 0.1) 2px,
-                transparent 2px,
-                transparent 4px
-            );
-            border-radius: 12px;
-            pointer-events: none;
-        }
-
-        .boss-eyes {
-            display: flex;
-            gap: 30px;
-            margin-bottom: 20px;
-            z-index: 1;
-        }
-
-        .boss-eye {
-            font-size: 3em;
-            color: #ff0000;
-            text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
-            animation: eyeGlow 1s infinite;
-        }
-
-        @keyframes eyeGlow {
-            0%, 100% {
-                text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
-            }
-            50% {
-                text-shadow: 0 0 25px rgba(255, 0, 0, 1);
-            }
-        }
-
-        .boss-mouth {
-            font-size: 2em;
-            color: #ff0000;
-            z-index: 1;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
-            animation: mouthBlink 0.5s infinite alternate;
-        }
-
-        @keyframes mouthBlink {
-            0% {
                 opacity: 1;
             }
-            100% {
-                opacity: 0.3;
+            50% {
+                opacity: 0.8;
             }
+        }
+
+        .doll-head {
+            width: 60px;
+            height: 60px;
+            background: #fff5e1;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .doll-eyes {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+
+        .doll-eye {
+            font-size: 1.2em;
+            color: #333;
+            animation: eyeBlink 0.8s infinite;
+        }
+
+        @keyframes eyeBlink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .doll-mouth {
+            font-size: 1.5em;
+            color: #ff6b9d;
+        }
+
+        .doll-body {
+            width: 50px;
+            height: 50px;
+            background: #ff6b9d;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 3px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .doll-body-line {
+            width: 2px;
+            height: 30px;
+            background: #fff5e1;
+        }
+
+        .doll-arms {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 3px;
+        }
+
+        .doll-arm-left, .doll-arm-right {
+            font-size: 1.5em;
+            color: #ff6b9d;
+            animation: armWave 0.6s ease-in-out infinite;
+        }
+
+        .doll-arm-right {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes armWave {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(20deg);
+            }
+        }
+
+        .doll-legs {
+            display: flex;
+            gap: 20px;
+        }
+
+        .doll-leg {
+            font-size: 1.8em;
+            color: #333;
         }
 
         @keyframes bossHit {
             0% {
-                transform: translateX(0) scale(1);
+                transform: translateY(0) scale(1);
             }
             25% {
-                transform: translateX(-10px) scale(0.95);
+                transform: translateY(-10px) scale(1.05);
             }
             50% {
-                transform: translateX(10px) scale(1.05);
+                transform: translateY(10px) scale(0.95);
             }
             75% {
-                transform: translateX(-5px) scale(0.98);
+                transform: translateY(-5px) scale(1.02);
             }
             100% {
-                transform: translateX(0) scale(1);
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -705,114 +736,6 @@
             color: #ffeb3b;
         }
 
-        .comments-board {
-            background: #1f1f1f;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            border: 2px solid #ff6b6b;
-        }
-
-        .comments-board h3 {
-            color: #ff6b6b;
-            margin-bottom: 15px;
-        }
-
-        .comment-input-section {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .comment-input-section input,
-        .comment-input-section textarea {
-            padding: 12px;
-            font-size: 1em;
-            border: 2px solid #ff6b6b;
-            background: #2a2a2a;
-            color: #fff;
-            border-radius: 8px;
-            font-family: 'Arial', sans-serif;
-            resize: vertical;
-        }
-
-        .comment-input-section input:focus,
-        .comment-input-section textarea:focus {
-            outline: none;
-            background: #333;
-            border-color: #ff8787;
-        }
-
-        .comment-input-section button {
-            background: #ff6b6b;
-            color: white;
-            padding: 12px;
-            font-size: 1em;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .comment-input-section button:hover {
-            background: #ff5252;
-        }
-
-        .comments-list {
-            max-height: 300px;
-            overflow-y: auto;
-            border-top: 2px solid #333;
-            padding-top: 15px;
-        }
-
-        .comment-item {
-            background: #2a2a2a;
-            border-left: 4px solid #ff6b6b;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .comment-author {
-            color: #ffeb3b;
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 0.95em;
-        }
-
-        .comment-text {
-            color: #ccc;
-            font-size: 0.95em;
-            word-break: break-word;
-            line-height: 1.4;
-        }
-
-        .comment-time {
-            color: #666;
-            font-size: 0.85em;
-            margin-top: 8px;
-        }
-
-        .empty-comments {
-            color: #999;
-            text-align: center;
-            padding: 20px;
-            font-size: 1em;
-        }
 
         @media (max-width: 600px) {
             .container {
@@ -926,11 +849,24 @@
 
             <div class="game-area">
                 <div class="boss-character" id="bossCharacter">
-                    <div class="boss-eyes">
-                        <span class="boss-eye">●</span>
-                        <span class="boss-eye">●</span>
+                    <div class="doll-head">
+                        <div class="doll-eyes">
+                            <span class="doll-eye">○</span>
+                            <span class="doll-eye">○</span>
+                        </div>
+                        <div class="doll-mouth">︿</div>
                     </div>
-                    <div class="boss-mouth">━</div>
+                    <div class="doll-body">
+                        <div class="doll-body-line"></div>
+                    </div>
+                    <div class="doll-arms">
+                        <span class="doll-arm-left">∧</span>
+                        <span class="doll-arm-right">∧</span>
+                    </div>
+                    <div class="doll-legs">
+                        <span class="doll-leg">Ⅰ</span>
+                        <span class="doll-leg">Ⅰ</span>
+                    </div>
                 </div>
                 <div class="hammer" id="hammer" onclick="hitBoss()">⚒️</div>
                 <p style="color: #999; margin-top: 20px;">망치를 클릭해서 때려!</p>
@@ -943,27 +879,17 @@
             </div>
 
             <div class="score-board">
-                <h3>⚔️ 보스 처치 기록</h3>
-                <div id="scoreList" class="empty-message">아직 처치된 보스가 없습니다.</div>
+                <h3>⚔️ 처치 기록</h3>
+                <div id="scoreList" class="empty-message">아직 처치된 대상이 없습니다.</div>
                 <button class="reset-button" onclick="resetAllData()">전체 초기화</button>
-            </div>
-
-            <div class="comments-board">
-                <h3>💬 댓글 (욕설 환영)</h3>
-                <div class="comment-input-section">
-                    <input type="text" id="commentAuthor" placeholder="닉네임" maxlength="20">
-                    <textarea id="commentText" placeholder="당신의 욕설을 마음껏 펼쳐라...💢" maxlength="200" rows="3"></textarea>
-                    <button onclick="addComment()">댓글 작성</button>
-                </div>
-                <div id="commentsList" class="comments-list"></div>
             </div>
         </div>
 
         <div id="bossDefeatedModal" class="modal" style="display: none;">
             <div class="modal-content">
-                <h2 style="color: #ffeb3b; margin-bottom: 20px;">🎉 보스 처치 성공!</h2>
+                <h2 style="color: #ffeb3b; margin-bottom: 20px; font-family: 'Fredoka One', cursive;">📔 세상에서 없애버렸습니다.</h2>
                 <div id="defeatStats"></div>
-                <button onclick="closeBossModal()" style="margin-top: 20px;">다시 플레이</button>
+                <button onclick="closeBossModal()" style="margin-top: 20px; font-family: 'Fredoka One', cursive;">다시 시작</button>
             </div>
         </div>
     </div>
@@ -975,8 +901,7 @@
             bossHp: BOSS_MAX_HP,
             currentPlayer: null,
             players: {},
-            bossDefeats: [],
-            comments: []
+            bossDefeats: []
         };
 
         // 로컬 스토리지에서 데이터 로드
@@ -1108,8 +1033,8 @@
             const stats = document.getElementById('defeatStats');
 
             let statsHtml = `
-                <p style="color: #999; margin-bottom: 20px;">
-                    처치일시: ${defeatRecord.timestamp}
+                <p style="color: #999; margin-bottom: 20px; font-family: 'Fredoka One', cursive;">
+                    ${defeatRecord.timestamp}
                 </p>
             `;
 
@@ -1117,10 +1042,10 @@
                 const isTop = index === 0;
                 statsHtml += `
                     <div class="defeat-stat ${isTop ? 'top' : ''}">
-                        <span class="defeat-label">
-                            ${isTop ? '🏆 ' : ''}${player.name}
+                        <span class="defeat-label" style="font-family: 'Fredoka One', cursive;">
+                            ${isTop ? '👑 ' : ''}${player.name}
                         </span>
-                        <span class="defeat-value ${isTop ? 'top' : ''}">
+                        <span class="defeat-value ${isTop ? 'top' : ''}" style="font-family: 'Fredoka One', cursive;">
                             ${player.damage} 데미지 (${player.hits}회)
                         </span>
                     </div>
@@ -1227,69 +1152,17 @@
         }
 
         function resetAllData() {
-            if (confirm('⚠️ 모든 게임 데이터를 삭제하시겠습니까? (복구 불가)')) {
+            if (confirm('⚠️ 모든 데이터를 초기화하시겠습니까? (복구 불가)')) {
                 gameState = {
                     currentBoss: null,
                     bossHp: BOSS_MAX_HP,
                     currentPlayer: null,
                     players: {},
-                    bossDefeats: [],
-                    comments: []
+                    bossDefeats: []
                 };
                 saveGameState();
                 resetBoss();
             }
-        }
-
-        function addComment() {
-            const authorInput = document.getElementById('commentAuthor');
-            const textInput = document.getElementById('commentText');
-
-            const author = authorInput.value.trim();
-            const text = textInput.value.trim();
-
-            if (author === '') {
-                alert('닉네임을 입력해주세요!');
-                return;
-            }
-
-            if (text === '') {
-                alert('댓글을 입력해주세요!');
-                return;
-            }
-
-            const comment = {
-                author,
-                text,
-                timestamp: new Date().toLocaleString('ko-KR')
-            };
-
-            gameState.comments.unshift(comment); // 최신순으로 추가
-            saveGameState();
-
-            authorInput.value = '';
-            textInput.value = '';
-
-            updateCommentsList();
-        }
-
-        function updateCommentsList() {
-            const commentsList = document.getElementById('commentsList');
-
-            if (gameState.comments.length === 0) {
-                commentsList.innerHTML = '<div class="empty-comments">아직 댓글이 없습니다. 첫 번째 댓글을 달아보세요!</div>';
-                return;
-            }
-
-            commentsList.innerHTML = gameState.comments
-                .map(comment => `
-                    <div class="comment-item">
-                        <div class="comment-author">💢 ${comment.author}</div>
-                        <div class="comment-text">${comment.text.replace(/\n/g, '<br>')}</div>
-                        <div class="comment-time">${comment.timestamp}</div>
-                    </div>
-                `)
-                .join('');
         }
 
         // 페이지 로드 시 초기화
@@ -1303,17 +1176,7 @@
                 }
             });
 
-            const commentText = document.getElementById('commentText');
-            if (commentText) {
-                commentText.addEventListener('keydown', function(e) {
-                    if (e.ctrlKey && e.key === 'Enter') {
-                        addComment();
-                    }
-                });
-            }
-
             updateScoreBoard();
-            updateCommentsList();
         });
 
         // 흔들림 애니메이션
